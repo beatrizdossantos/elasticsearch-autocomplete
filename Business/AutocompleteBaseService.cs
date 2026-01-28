@@ -46,14 +46,14 @@ namespace Business
 
         public virtual async Task<ProductSuggestResponse> SuggestProductAsync(string indexName, string term)
         {
-            // OBS: Usa apenas uma busca por prefixos, não é um autocomplete real!!
+            // OBS: Usa apenas uma busca por prefixos, não é bem um autocomplete real!!
             var searchResponse = await _elasticClient.SearchAsync<Product>(s => s
                                                         .Index(indexName)
                                                         .Size(5)
-                                                        .Query(qd => qd
-                                                            .Prefix(pd => pd
+                                                        .Query(q => q
+                                                            .MatchPhrasePrefix(mpp => mpp
                                                                 .Field(f => f.Name)
-                                                                .Value(term.ToLower())
+                                                                .Query(term)
                                                             )
                                                         )
                                                        );
